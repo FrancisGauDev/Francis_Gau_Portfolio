@@ -30,3 +30,6 @@ body {
     background-color: rgb(127, 156, 150);
 }
 
+#Snake {
+    margin: auto;
+}
