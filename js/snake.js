@@ -13,8 +13,8 @@ function initiation() {
         Height = window.innerHeight / 2 - unit * 30
     }
     var c = document.getElementById("Snake");
-    c.height = unit * 60 + Height
-    c.width = unit * 60 + Width
+    c.height = window.innerHeight
+    c.width = window.innerWidth
     var ctx = c.getContext("2d");
     ctx.moveTo(Width + unit * 3, Height + unit * 3);
     ctx.lineTo(Width + unit * 57, Height + unit * 3);
@@ -25,9 +25,13 @@ function initiation() {
     ctx.stroke();
 }
 
+Snake = []
+Food = []
+points = 0
+
 //Resetting values for the start of a game cycle
 function start() {
-    
+
 }
 
 
