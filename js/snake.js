@@ -45,9 +45,9 @@ function start() {
 
     //Food generation
     do {
-        Food = [Math.floor(Math.random() * 56) + 2, Math.floor(Math.random() * 56) + 2]
+        Food = [Math.floor(Math.random() * 54) + 3, Math.floor(Math.random() * 54) + 3]
     }
-    while (Snake[0] == Food[0])
+    while (Snake[0][0] == Food[0] && Snake[0][1] == Food[1])
 }
 
 function snakeM() {
@@ -55,6 +55,7 @@ function snakeM() {
         Snake[i] = Snake[i - 1]
     }
     Snake[0] = [Snake[0][0] + x, Snake[0][1] + y]
+    lock = false
 }
 
 function redraw(){
@@ -63,30 +64,59 @@ function redraw(){
     ctx.clearRect(Width + unit * 3, Height + unit * 3,unit * 54,unit * 54 )
     ctx.fillStyle = "#FA7921"
     for (var i = 0; i < Snake.length; i++){
-        ctx.fillRect(unit * Snake[i][0] + Width, unit * Snake[i][1] + Height, unit, unit);
+        ctx.fillRect(unit * Snake[i][0] + Width, unit * Snake[i][1] + Height, unit, unit)
     }
+    ctx.fillStyle = "#FFF94F"
+    ctx.fillRect(unit * Food[0] + Width, unit * Food[1] + Height, unit, unit);
 }
 
 function DirectionDetect(e) {
     if(e.keyCode > 36 && e.keyCode < 41){
         e.preventDefault();
     }
-    e = e || window.event;
-    if (e.keyCode == '38' && y != 1) {
-        x = 0
-        y = -1
+    if(lock == false){
+        e = e || window.event;
+        if (e.keyCode == '38' && y != 1) {
+            x = 0
+            y = -1
+            lock = true
+        }
+        else if (e.keyCode == '40' && y != -1) {
+            x = 0
+            y = 1
+            lock = true
+        }
+        else if (e.keyCode == '37' && x != 1) {
+           x = -1
+           y = 0
+           lock = true
+        }
+        else if (e.keyCode == '39' && x != -1) {
+           x = 1
+           y = 0
+           lock = true
+        }
     }
-    else if (e.keyCode == '40' && y != -1) {
-        x = 0
-        y = 1
+}
+
+function food(){
+    if(Snake[0][0] == Food[0] && Snake[0][1] == Food[1]){
+        Food = [Math.floor(Math.random() * 54) + 3, Math.floor(Math.random() * 54) + 3]
+        points += 100
+        j = Snake.length
+        Snake[j] = Snake[j - 1]
     }
-    else if (e.keyCode == '37' && x != 1) {
-       x = -1
-       y = 0
-    }
-    else if (e.keyCode == '39' && x != -1) {
-       x = 1
-       y = 0
+    fud = 0
+    while (fud = 0){
+        for(var i = 0; i < Snake.length; i++){
+            if(Snake[i][0] == Food[0] && Snake[i][1] == Food[1]){
+                Food = [Math.floor(Math.random() * 54) + 3, Math.floor(Math.random() * 54) + 3]
+                break
+            }
+            if( i = Snake.length - 1){
+                fud = 1
+            }
+        }
     }
 }
 
@@ -99,7 +129,7 @@ function collision(){
             }
         }
     }
-    if (Snake[0][0] < 3 || Snake[0][0] > 57 || Snake[0][1] < 3 || Snake[0][1] > 57){
+    if (Snake[0][0] < 3 || Snake[0][0] > 56 || Snake[0][1] < 3 || Snake[0][1] > 56){
         return false
     }else{
         return true
@@ -113,14 +143,18 @@ function test() {
 }
 
 function gameLoop(){
+    food()
     snakeM()
     redraw()
     if(collision()){
         setTimeout(function(){
             gameLoop()
-        }, 100)
+        }, 60)
     }else{
-        
+        alert("total points = " + points)
+        initiation()
+        start()
+        gameLoop()
     }
 }
 
