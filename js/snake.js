@@ -1,13 +1,20 @@
 //Screen values
-Width = 0
-Height = 0
-unit = 0
-Direction = 0
-x = 0
-y = 1
+var Width = 0
+var Height = 0
+var unit = 0
+
+//Setting up global variables variables
+var Snake = []
+var Food = []
+var points = 0
+var Direction = 0
+var x = 0
+var y = 1
 
 //Drawing the border, initiating values
 function initiation() {
+
+    //Deciding on size of playing field on load
     if (window.innerWidth > window.innerHeight){
         unit = Math.floor(window.innerHeight / 60)
         Width = window.innerWidth / 2 - unit * 30
@@ -15,6 +22,8 @@ function initiation() {
         unit = Math.floor(window.innerWidth / 60)
         Height = window.innerHeight / 2 - unit * 30
     }
+
+    //Drawing border
     var c = document.getElementById("Snake");
     c.height = window.innerHeight
     c.width = window.innerWidth
@@ -28,9 +37,6 @@ function initiation() {
     ctx.stroke();   
 }
 
-Snake = []
-Food = []
-points = 0
 //Resetting values for the start of a game cycle
 function start() {
     Snake = []
@@ -40,7 +46,7 @@ function start() {
     //Snake generation
     Snake[0] = [Math.floor(Math.random() * 40) + 10, Math.floor(Math.random() * 40) + 10]
     for (var i = 1; i < SLen; i++){
-        Snake[i] = [Snake[i - 1][0] - x, Snake[i - 1][1] - y]
+        Snake.push([Snake[i - 1][0] - x, Snake[i - 1][1] - y])
     }
 
     //Food generation
@@ -50,6 +56,7 @@ function start() {
     while (Snake[0][0] == Food[0] && Snake[0][1] == Food[1])
 }
 
+//Snake movement
 function snakeM() {
     for (var i = Snake.length - 1; i > 0; i--){
         Snake[i] = Snake[i - 1]
@@ -58,6 +65,7 @@ function snakeM() {
     lock = false
 }
 
+//Redrawing snake, called upon per frame
 function redraw(){
     var c = document.getElementById("Snake");
     var ctx = c.getContext("2d")
@@ -70,6 +78,7 @@ function redraw(){
     ctx.fillRect(unit * Food[0] + Width, unit * Food[1] + Height, unit, unit);
 }
 
+//Direction logic
 function DirectionDetect(e) {
     if(e.keyCode > 36 && e.keyCode < 41){
         e.preventDefault();
@@ -99,12 +108,12 @@ function DirectionDetect(e) {
     }
 }
 
+//Food check, and random relocation once eaten
 function food(){
     if(Snake[0][0] == Food[0] && Snake[0][1] == Food[1]){
         Food = [Math.floor(Math.random() * 54) + 3, Math.floor(Math.random() * 54) + 3]
         points += 100
-        j = Snake.length
-        Snake[j] = Snake[j - 1]
+        Snake.push(Snake[Snake.length - 1])
     }
     fud = 0
     while (fud = 0){
@@ -120,8 +129,10 @@ function food(){
     }
 }
 
+//Checking if the snake has eaten itself, or the wall
 function collision(){
 
+    //Snake self collision
     for (var i = 0; i < Snake.length; i++){
         for (var j = i + 1; j < Snake.length; j++){
             if (Snake[i][0] == Snake[j][0] && Snake[i][1] == Snake[j][1]){
@@ -129,6 +140,8 @@ function collision(){
             }
         }
     }
+
+    //Snake Wall detection
     if (Snake[0][0] < 3 || Snake[0][0] > 56 || Snake[0][1] < 3 || Snake[0][1] > 56){
         return false
     }else{
@@ -136,12 +149,7 @@ function collision(){
     }
 }
 
-function test() {
-    for (i of Snake) {
-        console.log(i + " ");
-    }
-}
-
+//Main game loop to be called
 function gameLoop(){
     food()
     snakeM()
